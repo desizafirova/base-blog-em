@@ -16,6 +16,8 @@ export function Posts() {
     queryKey: ['posts'],
     // this is the function that we are going to run when we fetch the data
     queryFn: fetchPosts,
+    //  staleTime is in ms
+    staleTime: 2000,
   });
 
   if (isLoading) {
