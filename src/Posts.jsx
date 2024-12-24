@@ -6,16 +6,16 @@ import { useQuery } from '@tanstack/react-query';
 const maxPostPage = 10;
 
 export function Posts() {
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedPost, setSelectedPost] = useState(null);
 
   // replace with useQuery
   const { data, isError, error, isLoading } = useQuery({
     //  We add some options to the useQuery in order to let the query knows which data to fetch. useQuery takes an object of options. The order of the options doesn't matter
     // The queryKey is what defines this data within the query cache and it is always an array
-    queryKey: ['posts'],
+    queryKey: ['posts', currentPage],
     // this is the function that we are going to run when we fetch the data
-    queryFn: fetchPosts,
+    queryFn: () => fetchPosts(currentPage),
     //  staleTime is in ms
     staleTime: 2000,
   });
@@ -47,11 +47,21 @@ export function Posts() {
         ))}
       </ul>
       <div className="pages">
-        <button disabled onClick={() => {}}>
+        <button
+          disabled={currentPage <= 1}
+          onClick={() => {
+            setCurrentPage((previousValue) => previousValue - 1);
+          }}
+        >
           Previous page
         </button>
-        <span>Page {currentPage + 1}</span>
-        <button disabled onClick={() => {}}>
+        <span>Page {currentPage}</span>
+        <button
+          disabled={currentPage >= maxPostPage}
+          onClick={() => {
+            setCurrentPage((previousValue) => previousValue + 1);
+          }}
+        >
           Next page
         </button>
       </div>
